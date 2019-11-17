@@ -22,7 +22,12 @@ FROM ${TARGET_ARCH}/node as install-app
 WORKDIR /usr/src/app
 # Copy the app dependencies to the working directory.
 COPY --from=install-dependencies /usr/src/app-deps ./
-# Copy the package metadata, app source code, and environment JSON to the working directory.
-COPY package.json Server.js env.json ./
+# Copy the package metadata and the environment variable configuration specification to the working
+# directory.
+COPY package.json env.json ./
+# Copy the app source code to the working directory.
+COPY Source/ ./Source
+# Create a mount point for the Data and MessageLogs directory.
+VOLUME /usr/src/app/Data/
 # Configure the container to start the server when ran.
 ENTRYPOINT ["npm", "run", "start"]
