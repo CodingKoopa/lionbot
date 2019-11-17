@@ -32,17 +32,42 @@ class Google
     this.accepted_user_emails = null;
   }
 
+  async AskQuestion(question)
+  {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question[promisify.custom] = (question) => 
+    {
+      return new Promise((resolve) => 
+      {
+        rl.question(question, resolve);
+      });
+    };
+    const answer = await promisify(rl.question)(question);
+    rl.close();
+    return answer;
+  }
+
   async Initialize()
   {
     logger.Debug(`Reading OAuth credentials from "${this.credential_path}".`);
-    let credential_data;
-    try
+    let credential_data = null;
+    while (credential_data === null)
     {
-      credential_data = await fs.readFile(this.credential_path);
-    }
-    catch (e)
-    {
-      throw new Error(`Unable to read credential file: ${e}.`);
+      try
+      {
+        credential_data = await fs.readFile(this.credential_path);
+      }
+      catch (e)
+      {
+        logger.Error(`Unable to read credential file: ${e}.`);
+        const choice = await this.AskQuestion(`Try again? (y/n)`);
+
+        if (choice === `n`)
+          throw new Error(`Unable to read credential file.`);
+      }
     }
     return this.Authenticate(JSON.parse(credential_data));
   }
@@ -70,12 +95,8 @@ class Google
         scope: this.scopes,
       });
       logger.Info(`Authorize this app by visiting this url: ${auth_url}`);
-      const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      });
-      const code = await promisify(rl.question)(`Enter the code from the page: `);
-      rl.close();
+      
+      const code = await this.AskQuestion(`Enter the code from the page: `);
 
       let token;
       try 
