@@ -1,0 +1,42 @@
+{
+  "name": "lionbot",
+  "version": "1.0.0",
+  "description": "A Discord bot with Google Sheets integration.",
+  "keywords": [
+    "client",
+    "bot",
+    "discord",
+    "discordapp",
+    "discord.js",
+    "google",
+    "spreadsheet",
+    "google-apis"
+  ],
+  "homepage": "https://gitlab.com/CodingKoopa/lionbot",
+  "bugs": "https://gitlab.com/CodingKoopa/lionbot/issues",
+  "license": "GPL-2.0",
+  "author": {
+    "name": "Kyle Loerker",
+    "email": "kyleloerker@gmail.com"
+  },
+  "repository": "gitlab:CodingKoopa/lionbot",
+  "scripts": {
+    "lint": "./node_modules/eslint/bin/eslint.js .",
+    "start": "node Source/Server.js"
+  },
+  "dependencies": {
+    "checkenv": "^1.2.2",
+    "discord.js": "^11.3.2",
+    "googleapis": "^44.0.0",
+    "readline": "^1.3.0",
+    "winston": "^2.4.1"
+  },
+  "optionalDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-plugin-more-naming-conventions": "^1.0.1"
+  },
+  "engines": {
+    "node": ">=11.0.0"
+  },
+  "private": true
+}
