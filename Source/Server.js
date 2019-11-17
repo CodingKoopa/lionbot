@@ -107,7 +107,7 @@ async function Start()
   }
   catch (e)
   {
-    logger.Error(`Initialization failed: ${e}.`);
+    logger.Error(`Initialization failed: ${e}`);
     Uninitialize();
     return;
   }
@@ -120,7 +120,7 @@ async function Start()
   }
   catch (e)
   {
-    logger.Error(`Spreadsheet processing failed: ${e}.`);
+    logger.Error(`Spreadsheet processing failed: ${e}`);
     Uninitialize();
     return;
   }
