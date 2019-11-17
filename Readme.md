@@ -130,6 +130,7 @@ A full list of commands be found by running the `help` command.
 LionBot's [Google Sheets](https://www.google.com/sheets/about/) integration follows a pipeline to a Google Sheet for Discord user verification.
 - Users submit a form via a [Google Form](https://www.google.com/forms/about/).
 - Google automatically translates the data to a Google Sheet spreadsheet:
+
 ![Google Sheet initial spreadsheet.](Docs/sheet-initial.png)
 - LionBot fetches the cells of the spreadsheet. This is done when the bot is started, and when the `process` command is ran from Discord. Additionally, every 10 minutes the bot will check to see whether a change has been made to the file, and if so fetch the cells again.
 - LionBot filters the results to users whose status is blank, as shown above. These users have had their submission neither approved nor rejected, as they haven't yet been processed by the bot. This is the **user queue**.
@@ -139,6 +140,7 @@ LionBot's [Google Sheets](https://www.google.com/sheets/about/) integration foll
 - LionBot processes the queues:
   - On Discord, LionBot grants the roles to users in the **accept queue**, and DMs the user with info and a success message. LionBot DMs the users in the **reject queue** if possible. In both cases, the action is logged in the report channel.
   - On Google Sheets, LionBot populates the sheets with the processed users' statuses, and snowflake ID if accepted, or reject reason if not accepted:
+
 ![Google Sheets populated spreadsheet.](Docs/sheet-populated.png)
 
 # License
