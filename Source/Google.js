@@ -23,10 +23,10 @@ class Google
       `https://www.googleapis.com/auth/drive.metadata.readonly`
     ];
     // This file stores the OAuth credentials. It's obtained from the Google API Console.
-    this.credential_path = `GoogleOAuthCredentials.json`;
+    this.credential_path = `Data/GoogleOAuthCredentials.json`;
     // This file stores the user's access and refresh tokens. It's created automatically when the
     // authorization flow completes for the first time.
-    this.token_path = `GoogleOAuthToken.json`;
+    this.token_path = `Data/GoogleOAuthToken.json`;
     this.sheet_name = `Users`;
 
     this.accepted_user_emails = null;
