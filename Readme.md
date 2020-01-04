@@ -13,7 +13,7 @@ In this section, for Docker instructions, there will be two code samples:
 - A Bash command for use with with the Docker CLI.
 - A [Docker Compose](https://docs.docker.com/compose/overview/) `yml` configuration, with `version: "3.7"`.
 
-Which one of these two you follow depends on whether or not you use Docker Compose in your setup.
+Which one of these two you follow depends on whether or not you use Docker Compose in your setup. **Either way, the Docker excerpts from different subheadings should be combined into a final command or `yml`.**
 
 #### Discord Setup
 1. Create a Discord server.
@@ -36,6 +36,10 @@ Which one of these two you follow depends on whether or not you use Docker Compo
 6. Invite the bot to the server using [this](https://discordapp.com/developers/docs/topics/oauth2#bot-authorization-flow) guide. For the permissions, just use `0`, because you already have made a role with the bot's permissions.
 7. Give the bot role to the newly invited bot.
 
+#### Google Setup
+1. Obtain Google OAuth client credentials using [this](https://developers.google.com/identity/protocols/OAuth2) guide. For starting out, the [Node.js Quickstart](https://developers.google.com/sheets/api/quickstart/nodejs) may be easier to use.
+2. Save the credentials JSON. 
+
 #### Bot Setup
 1. Open up a terminal or command prompt.
 2. Clone the `lionbot` repository:
@@ -55,7 +59,7 @@ LB_DISCORD_TOKEN=ASFldsDFjk7DFkmslmk9Dmlm.DFnlsi.DFDSMKLSDFK_dfDSF8h7vjkjDFd
 The next steps depend on whether or not you are using Docker.
 
 ##### Bot Setup with Docker
-5. Run the bot:
+1. Run the bot (read the following steps before running this!):
 ```bash
 docker run --env-file .env registry.gitlab.com/codingkoopa/lionbot/amd64:stable
 ```
@@ -65,8 +69,7 @@ services:
     image: registry.gitlab.com/codingkoopa/lionbot/amd64:stable
     env_file: /opt/lionbot/.env
 ```
-
-It may also be desirable to have the bot restart if it crashes (these are to be merged with the above commands):
+2. Make the bot restart if it crashes (Optional.):
 ```bash
 docker run --restart on-failure
 ```
@@ -75,9 +78,21 @@ services:
   lionbot:
     restart: on-failure
 ```
+3. Use the `Data` mount point to create a volume:
+```bash
+docker run --mount type=volume,source=lionbot-data,target=/usr/src/app/Data
+```
+```yml
+services:
+  lionbot:
+    volumes:
+      - type: volume
+        source: lionbot-data
+        target: /usr/src/app/Data
+```
 
 ##### Bot Setup without Docker
-5. Export the configuration variables. This can be done by turning the aforementioned environment file into a script that exports the variables, or a Bash function like so:
+1. Export the configuration variables. This can be done by turning the aforementioned environment file into a script that exports the variables, or a Bash function like so:
 ```bash
 # Exports the contents of an "ENV" file.
 # Arguments:
@@ -90,14 +105,18 @@ function export-env
   set +o allexport
 }
 ```
-6. Install the Node.js dependencies with the [NPM](https://www.npmjs.com/) package manager:
+2. Install the Node.js dependencies with the [NPM](https://www.npmjs.com/) package manager:
 ```bash
 npm install
 ```
-7. Run the bot:
+3. Run the bot:
 ```bash
 npm run start
 ```
+
+##### Bot Initialization
+1. Copy the credentials JSON, from [Google Setup](#google-setup), to `Data/GoogleOAuthCredentials.json`. If using Docker, the path to `Data` can be found by running a command like `docker volume inspect --format '{{ .Mountpoint }}' lionbot-data`.
+2. Follow the link to have the bot create `Data/GoogleOAuthToken.json`.
 
 #### Building
 LionBot Docker images are automatically built by [GitLab CI/CD](https://docs.gitlab.com/ee/ci/) and uploaded to the [GitLab Container Registry](https://docs.gitlab.com/ee/user/packages/container_registry/), but it can be built manually:
