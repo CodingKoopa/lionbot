@@ -199,6 +199,13 @@ class Discord
     logger.Verbose(`Updating server for accepted users.`);
     const promise_arr = accept_queue.map(user => 
     {
+      const embed = new discord.RichEmbed()
+        .setTitle(`User ${user.discord_tag} (${user.email}) Accepted`)
+        .setColor(`#43B581`);
+      if (user.guild_member)
+        embed.setAuthor(user.guild_member.nickname, user.guild_member.user.avatarURL);
+      state.report_channel.send({embed});
+    
       return user.guild_member.addRole(state.verify_role)
         .then(user.guild_member.send(`Your sign up entry for ${state.guild.name} has been accepted!\
  :tada:
