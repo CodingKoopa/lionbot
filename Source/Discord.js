@@ -212,7 +212,8 @@ class Discord
         .then(user.guild_member.send(`Your sign up entry for ${state.guild.name} has been accepted!\
  :tada:
 
-Please see <#${process.env.LB_WELCOME_CHANNEL}> to familiarize yourself with the server :)`));
+Please see <#${process.env.LB_WELCOME_CHANNEL}> to familiarize yourself with the server :)`))
+        .then(user.guild_member.addRole(state.guild.roles.find(role => role.name === user.year)));
     });
     return Promise.all(promise_arr);
   }
