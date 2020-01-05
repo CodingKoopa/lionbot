@@ -22,6 +22,14 @@ process.on(`uncaughtException`, e =>
   logger.Error(`Uncaught exception: "${e.message}."`);
   process.exit(-1);
 });
+process.on(`SIGINT`, () => 
+{
+  Uninitialize();
+});
+process.on(`SIGTERM`, () => 
+{
+  Uninitialize();
+});
 
 const google = new Google();
 const discord = new Discord();
@@ -33,6 +41,8 @@ function Uninitialize()
   // Google has nothing to uninitialize.
 
   discord.Uninitialize();
+
+  process.exit(0);
 }
 
 function LogFailedQueue(failed_queue, queue_type, error)
