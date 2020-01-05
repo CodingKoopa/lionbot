@@ -24,11 +24,11 @@ process.on(`uncaughtException`, e =>
 });
 process.on(`SIGINT`, () => 
 {
-  Uninitialize();
+  setTimeout(Uninitialize, 1000);
 });
 process.on(`SIGTERM`, () => 
 {
-  Uninitialize();
+  setTimeout(Uninitialize, 1000);
 });
 
 const google = new Google();
