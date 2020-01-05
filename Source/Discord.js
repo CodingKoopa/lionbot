@@ -22,6 +22,8 @@ class Discord
     logger.Verbose(`Logging into Discord.`);
     await this.client.login(process.env.LB_TOKEN);
 
+    this.client.user.setActivity(`sign up forms 👌`, { type: `WATCHING` });
+
     state.report_channel = this.client.channels.get(process.env.LB_REPORT_CHANNEL);
     if (!state.report_channel)
       throw new Error(`Report channel "${process.env.LB_REPORT_CHANNEL}" not found.`);
