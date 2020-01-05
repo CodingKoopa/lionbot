@@ -1,6 +1,6 @@
 {
   "name": "lionbot",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Discord bot with Google Sheets integration.",
   "keywords": [
     "client",
@@ -31,7 +31,7 @@
     "readline": "^1.3.0",
     "winston": "^2.4.1"
   },
-  "optionalDependencies": {
+  "devDependencies": {
     "eslint": "^4.19.1",
     "eslint-plugin-more-naming-conventions": "^1.0.1"
   },
