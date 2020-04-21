@@ -209,8 +209,8 @@ class Discord
       state.report_channel.send({embed});
 
       return user.guild_member.addRole(state.verify_role)
-        .then(user.guild_member.send(`Your sign up entry for ${state.guild.name} has been accepted!\
- :tada:
+        .then(user.guild_member.send(`Your sign up entry for ${state.guild.name} has been \
+accepted! :tada:
 
 Please see <#${process.env.LB_WELCOME_CHANNEL}> to familiarize yourself with the server :)`))
         .then(user.guild_member.addRole(state.guild.roles.find(role => role.name === user.year)));

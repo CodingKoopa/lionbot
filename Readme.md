@@ -19,19 +19,19 @@ Which one of these two you follow depends on whether or not you use Docker Compo
 1. Create a Discord server.
 2. Modify the `@everyone` role to take away the `Send Messages` permission in the `Text Permissions` section.
 3. Make 4 roles (These must be named exactly how they are typed here, unless noted otherwise.):
- - The `Admins` role. These are administrators, the staff with the most power. The permissions are up to you.
- - The `Moderators` role. These are moderators, staff members with less power than the administrators. The permissions are up to you.
- - The Bold and Bash role (The name of this role is up to you.). This is the bot's role. The permissions must grant:
-    - `Read Text Channels & See Voice Channels` to receive commands.
-    - `Send Text Messages` to respond to commands.
-    - `Manage Roles` for the verification process.
-    - `Manage Messages` to delete entered commands that ended successfully, and clean up the verification channel.
- - The `Verified` role. The permissions should have everything except for `Send Messages` **disabled**, with `Send Messages` itself **enabled**.
-4. Make 3 text channels in addition to the default `#general` channel (The names are up to you.):
-    - The welcome channel. This contains info about the server. The permissions are up to you.
-    - The report channel. This is where the bot reports events related to verification as well as mod mail. The permissions must be:
-        - `@everyone` is denied the `Read Messages` permission.
-        - `Admins`, `Moderators`, and the bot are granted the `Read Messages` permission.
+- The `Admins` role. These are administrators, the staff with the most power. The permissions are up to you.
+- The `Moderators` role. These are moderators, staff members with less power than the administrators. The permissions are up to you.
+- The Bold and Bash role (The name of this role is up to you.). This is the bot's role. The permissions must grant:
+  - `Read Text Channels & See Voice Channels` to receive commands.
+  - `Send Text Messages` to respond to commands.
+  - `Manage Roles` for the verification process.
+  - `Manage Messages` to delete entered commands that ended successfully, and clean up the verification channel.
+- The `Verified` role. The permissions should have everything except for `Send Messages` **disabled**, with `Send Messages` itself **enabled**.
+1. Make 3 text channels in addition to the default `#general` channel (The names are up to you.):
+- The welcome channel. This contains info about the server. The permissions are up to you.
+- The report channel. This is where the bot reports events related to verification as well as mod mail. The permissions must be:
+   - `@everyone` is denied the `Read Messages` permission.
+   - `Admins`, `Moderators`, and the bot are granted the `Read Messages` permission.
 5. Make a bot user using [this](https://discordapp.com/developers/docs/intro) guide.
 6. Invite the bot to the server using [this](https://discordapp.com/developers/docs/topics/oauth2#bot-authorization-flow) guide. For the permissions, just use `0`, because you already have made a role with the bot's permissions.
 7. Give the bot role to the newly invited bot.
