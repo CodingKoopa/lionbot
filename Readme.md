@@ -9,11 +9,6 @@ LionBot is a Discord bot uniquely featuring integration with Google, allowing fo
 - [Node.js](https://nodejs.org/) is required, alternatively to Docker, to run LionBot directly on the host.
 
 ### Instructions
-In this section, for Docker instructions, there will be two code samples:
-- A Bash command for use with with the Docker CLI.
-- A [Docker Compose](https://docs.docker.com/compose/overview/) `yml` configuration, with `version: "3.7"`.
-
-Which one of these two you follow depends on whether or not you use Docker Compose in your setup. **Either way, the Docker excerpts from different subheadings should be combined into a final command or `yml`.**
 
 #### Discord Setup
 1. Create a Discord server.
@@ -59,6 +54,12 @@ LB_DISCORD_TOKEN=ASFldsDFjk7DFkmslmk9Dmlm.DFnlsi.DFDSMKLSDFK_dfDSF8h7vjkjDFd
 The next steps depend on whether or not you are using Docker.
 
 ##### Bot Setup with Docker
+In this section, there will be two code samples for each step:
+- A Bash command for use with with the Docker CLI.
+- A [Docker Compose](https://docs.docker.com/compose/overview/) `yml` configuration, with `version: "3.7"`.
+
+Which one of these two you follow depends on whether or not you use Docker Compose in your setup. **Either way, the Docker excerpts should be combined into a final command or `yml`.**
+
 1. Run the bot (read the following steps before running this!):
 ```bash
 docker run --env-file .env registry.gitlab.com/codingkoopa/lionbot/amd64:stable
