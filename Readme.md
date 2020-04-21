@@ -163,5 +163,5 @@ LionBot's [Google Sheets](https://www.google.com/sheets/about/) integration foll
 
 ![Google Sheets populated spreadsheet.](Docs/sheet-populated.png)
 
-# License
+## License
 LionBot is licensed under the GNU General Public License v2.0.
