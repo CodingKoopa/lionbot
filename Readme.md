@@ -30,8 +30,8 @@ Which one of these two you follow depends on whether or not you use Docker Compo
 1. Make 3 text channels in addition to the default `#general` channel (The names are up to you.):
 - The welcome channel. This contains info about the server. The permissions are up to you.
 - The report channel. This is where the bot reports events related to verification as well as mod mail. The permissions must be:
-   - `@everyone` is denied the `Read Messages` permission.
-   - `Admins`, `Moderators`, and the bot are granted the `Read Messages` permission.
+  - `@everyone` is denied the `Read Messages` permission.
+  - `Admins`, `Moderators`, and the bot are granted the `Read Messages` permission.
 5. Make a bot user using [this](https://discordapp.com/developers/docs/intro) guide.
 6. Invite the bot to the server using [this](https://discordapp.com/developers/docs/topics/oauth2#bot-authorization-flow) guide. For the permissions, just use `0`, because you already have made a role with the bot's permissions.
 7. Give the bot role to the newly invited bot.
