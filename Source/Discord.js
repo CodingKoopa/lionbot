@@ -18,7 +18,7 @@ class Discord
   }
 
   async Initialize()
-  { 
+  {
     logger.Verbose(`Logging into Discord.`);
     await this.client.login(process.env.LB_TOKEN);
 
@@ -27,7 +27,7 @@ class Discord
     state.report_channel = this.client.channels.get(process.env.LB_REPORT_CHANNEL);
     if (!state.report_channel)
       throw new Error(`Report channel "${process.env.LB_REPORT_CHANNEL}" not found.`);
-        
+
     state.guild = state.report_channel.guild;
     if (!state.guild)
       throw new Error(`Guild "${process.env.LB_GUILD}" not found."`);
@@ -64,7 +64,7 @@ class Discord
     });
 
     // When a new message is recieved.
-    this.client.on(`message`, message => 
+    this.client.on(`message`, message =>
     {
       // Ignore bot messages.
       if (message.author.bot)
@@ -166,7 +166,7 @@ class Discord
 
       let accept_queue = [];
       let reject_queue = [];
-      user_queue.forEach(user => 
+      user_queue.forEach(user =>
       {
         const regex_str = `^[A-Za-z0-9._%+-]+@${process.env.LB_DOMAIN}$`;
         const regex = RegExp(regex_str, `g`);
@@ -199,7 +199,7 @@ class Discord
   async AcceptUsers(accept_queue)
   {
     logger.Verbose(`Updating server for accepted users.`);
-    const promise_arr = accept_queue.map(user => 
+    const promise_arr = accept_queue.map(user =>
     {
       const embed = new discord.RichEmbed()
         .setTitle(`User ${user.discord_tag} (${user.email}) Accepted`)
@@ -207,7 +207,7 @@ class Discord
       if (user.guild_member)
         embed.setAuthor(user.guild_member.nickname, user.guild_member.user.avatarURL);
       state.report_channel.send({embed});
-    
+
       return user.guild_member.addRole(state.verify_role)
         .then(user.guild_member.send(`Your sign up entry for ${state.guild.name} has been accepted!\
  :tada:
@@ -221,7 +221,7 @@ Please see <#${process.env.LB_WELCOME_CHANNEL}> to familiarize yourself with the
   RejectUsers(reject_queue)
   {
     logger.Verbose(`Updating server for rejected users.`);
-    reject_queue.forEach(user_reject => 
+    reject_queue.forEach(user_reject =>
     {
       const embed = new discord.RichEmbed()
         .setTitle(`User ${user_reject.user.discord_tag} (${user_reject.user.email}) Rejected`)

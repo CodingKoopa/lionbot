@@ -13,20 +13,20 @@ logger.Info(`LionBot initializing.`);
 
 // Initialize Node.js runtime things, to handle rejections and exceptions.
 logger.Info(`Initializing Node.js.`);
-process.on(`unhandledRejection`, e => 
+process.on(`unhandledRejection`, e =>
 {
   logger.Error(`Unhandled rejection: "${e.message}."`);
 });
-process.on(`uncaughtException`, e => 
+process.on(`uncaughtException`, e =>
 {
   logger.Error(`Uncaught exception: "${e.message}."`);
   process.exit(-1);
 });
-process.on(`SIGINT`, () => 
+process.on(`SIGINT`, () =>
 {
   setTimeout(Uninitialize, 1000);
 });
-process.on(`SIGTERM`, () => 
+process.on(`SIGTERM`, () =>
 {
   setTimeout(Uninitialize, 1000);
 });
@@ -62,7 +62,7 @@ async function ProcessSpreadsheet(google_auth)
   {
     let {accept_queue, reject_queue} = discord.ProcessUserQueue(user_queue);
     ({accept_queue, reject_queue} = google.ProcessUserQueue(accept_queue, reject_queue));
-          
+
     if (accept_queue.length > 0)
     {
       try
@@ -136,7 +136,7 @@ async function Start()
   }
 
   logger.Info(`Scheduling spreadsheet processing.`);
-  async function ForceProcessSpreadsheet() 
+  async function ForceProcessSpreadsheet()
   {
     if (await google.SpreadsheetIsModified(google_auth))
     {

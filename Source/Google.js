@@ -38,9 +38,9 @@ class Google
       input: process.stdin,
       output: process.stdout,
     });
-    rl.question[promisify.custom] = (question) => 
+    rl.question[promisify.custom] = (question) =>
     {
-      return new Promise((resolve) => 
+      return new Promise((resolve) =>
       {
         rl.question(question, resolve);
       });
@@ -72,7 +72,7 @@ class Google
     return this.Authenticate(JSON.parse(credential_data));
   }
 
-  async Authenticate(credentials) 
+  async Authenticate(credentials)
   {
     const {client_secret, client_id, redirect_uris} = credentials.installed;
     const auth = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
@@ -95,15 +95,15 @@ class Google
         scope: this.scopes,
       });
       logger.Info(`Authorize this app by visiting this url: ${auth_url}`);
-      
+
       const code = await this.AskQuestion(`Enter the code from the page: `);
 
       let token;
-      try 
+      try
       {
-        token = await auth.getToken(code); 
+        token = await auth.getToken(code);
       }
-      catch (e) 
+      catch (e)
       {
         throw new Error(`Unable to get access token: ${e}.`);
       }
@@ -169,7 +169,7 @@ ${state.last_spreadsheet_check_time.toISOString()}.`);
       range: `'${this.sheet_name}'!B2:E`
     };
     let res;
-    try 
+    try
     {
       res = await sheets.spreadsheets.values.get(request);
     }
@@ -191,7 +191,7 @@ ${state.last_spreadsheet_check_time.toISOString()}.`);
 
       return user_accept_queue;
     }
-    else 
+    else
     {
       throw new Error(`No rows found`);
     }
@@ -212,7 +212,7 @@ ${state.last_spreadsheet_check_time.toISOString()}.`);
         }
         else
         {
-          return true;          
+          return true;
         }
       });
     }
@@ -222,7 +222,7 @@ ${state.last_spreadsheet_check_time.toISOString()}.`);
   async AcceptUsers(auth, accept_queue)
   {
     logger.Verbose(`Updating spreadsheet for accepted users.`);
-    let data = accept_queue.map(user => 
+    let data = accept_queue.map(user =>
     {
       // The +2 accounts for the first row of the spreadsheet being the header, and the index
       // 0-index (unlike the spreadsheet!).
@@ -258,7 +258,7 @@ ${state.last_spreadsheet_check_time.toISOString()}.`);
   async RejectUsers(auth, reject_queue)
   {
     logger.Verbose(`Updating spreadsheet for rejected users.`);
-    let data = reject_queue.map(user_reject => 
+    let data = reject_queue.map(user_reject =>
     {
       // The +2 accounts for the first row of the spreadsheet being the header, and the index
       // 0-index (unlike the spreadsheet!).

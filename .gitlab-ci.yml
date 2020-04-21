@@ -9,7 +9,6 @@
     # Enable the Docker service.
     - docker:dind
 
-
 # Define the stages.
 stages:
   # Create a static code analysis stage.
@@ -19,6 +18,32 @@ stages:
   # Create an app package deploying stage.
   - deploy
 
+analysis:ec:
+  # Add to the analysis stage.
+  stage: analyze
+  # Use the latest ec Docker image.
+  image: mstruebing/editorconfig-checker:latest
+  script:
+    # Check that all text complies with the EditorConfig file.
+    - ec
+
+analysis:shfmt:
+  # Add to the analysis stage.
+  stage: analyze
+  # Use the latest Alpine Linux shfmt Docker image.
+  image: mvdan/shfmt:latest-alpine
+  script:
+    # Check that all Bash code has proper formatting.
+    - shfmt -d CI
+
+analysis:shellcheck:
+  # Add to the analysis stage.
+  stage: analyze
+  # Use the latest stable shellchecl Docker image.
+  image: koalaman/shellcheck-alpine:stable
+  script:
+    # Check that all Bash code is proper.
+    - shellcheck -x CI/**/*.sh
 
 # Define the ESLint linting job.
 analysis:eslint:
@@ -33,11 +58,9 @@ analysis:eslint:
   # Run the ESLint lint script.
   script: CI/Analyze/ESLint.sh
 
-
 # Define the Docker image building anchor. Since there's already a Docker in Docker anchor, this
 # should only define elements needed for building.
-.build:docker: &docker_build
-  # Include the Docker in Docker anchor.
+.build:docker: &docker_build # Include the Docker in Docker anchor.
   <<: *dind
   # Any Docker image building will be a part of the package building stage, so add it.
   stage: build
@@ -74,10 +97,8 @@ build:docker:arm64v8:
     # platforms, such as the Raspberry Pi 2 v1.2 model and the Raspberry Pi 3 models.
     TARGET_ARCH: arm64v8
 
-
 # Define the Docker image deploying anchor.
-.deploy:docker: &docker_deploy
-  # Include the Docker in Docker anchor.
+.deploy:docker: &docker_deploy # Include the Docker in Docker anchor.
   <<: *dind
   # Add to the deploying stage.
   stage: deploy

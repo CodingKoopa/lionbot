@@ -38,7 +38,7 @@ Which one of these two you follow depends on whether or not you use Docker Compo
 
 #### Google Setup
 1. Obtain Google OAuth client credentials using [this](https://developers.google.com/identity/protocols/OAuth2) guide. For starting out, the [Node.js Quickstart](https://developers.google.com/sheets/api/quickstart/nodejs) may be easier to use.
-2. Save the credentials JSON. 
+2. Save the credentials JSON.
 
 #### Bot Setup
 1. Open up a terminal or command prompt.
