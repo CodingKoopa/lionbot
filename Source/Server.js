@@ -34,7 +34,7 @@ process.on(`SIGTERM`, () =>
 const google = new Google();
 const discord = new Discord();
 
-function Uninitialize()
+function Uninitialize(fail = false)
 {
   logger.Info(`LionBot uninitializing. Have a wonderful day!`);
 
@@ -42,7 +42,7 @@ function Uninitialize()
 
   discord.Uninitialize();
 
-  process.exit(0);
+  process.exit(fail ? -1 : 0);
 }
 
 function LogFailedQueue(failed_queue, queue_type, error)
@@ -118,7 +118,7 @@ async function Start()
   catch (e)
   {
     logger.Error(`Initialization failed: ${e}`);
-    Uninitialize();
+    Uninitialize(true);
     return;
   }
   logger.Info(`Initialization completed.`);
@@ -131,7 +131,7 @@ async function Start()
   catch (e)
   {
     logger.Error(`Spreadsheet processing failed: ${e}`);
-    Uninitialize();
+    Uninitialize(true);
     return;
   }
 
