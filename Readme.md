@@ -1,5 +1,5 @@
 # LionBot
-LionBot is a Discord bot uniquely featuring integration with Google, allowing for a coherent infrastructure joining Google Accounts with Discord accounts. Its command structure is borrowed from [Bold and Bash](https://gitlab.com/mk8mc/web/bold-and-bash).
+LionBot is a Discord bot uniquely featuring integration with Google, allowing for a coherent infrastructure joining Google Accounts with Discord accounts. Its command structure is borrowed from [Bold and Bash](https://gitlab.com/CodingKoopa/bold-and-bash).
 
 ## Setup
 
