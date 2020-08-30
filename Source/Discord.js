@@ -29,8 +29,6 @@ class Discord
       throw new Error(`Report channel "${process.env.LB_REPORT_CHANNEL}" not found.`);
 
     state.guild = state.report_channel.guild;
-    if (!state.guild)
-      throw new Error(`Guild "${process.env.LB_GUILD}" not found."`);
 
     state.verify_role = await state.guild.roles.fetch(process.env.LB_VERIFY_ROLE);
     if (!state.verify_role)
