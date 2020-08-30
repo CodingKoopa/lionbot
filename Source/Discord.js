@@ -24,7 +24,7 @@ class Discord
 
     this.client.user.setActivity(`sign up forms 👌`, { type: `WATCHING` });
 
-    state.report_channel = this.client.channels.get(process.env.LB_REPORT_CHANNEL);
+    state.report_channel = await this.client.channels.fetch(process.env.LB_REPORT_CHANNEL);
     if (!state.report_channel)
       throw new Error(`Report channel "${process.env.LB_REPORT_CHANNEL}" not found.`);
 
@@ -32,7 +32,7 @@ class Discord
     if (!state.guild)
       throw new Error(`Guild "${process.env.LB_GUILD}" not found."`);
 
-    state.verify_role = state.guild.roles.get(process.env.LB_VERIFY_ROLE);
+    state.verify_role = await state.guild.roles.fetch(process.env.LB_VERIFY_ROLE);
     if (!state.verify_role)
       throw new Error(`Verification role "${process.env.LB_VERIFY_ROLE}" not found.`);
 
@@ -43,7 +43,7 @@ class Discord
 
     logger.Debug(`Caching users.`);
     // Cache the users.
-    const member_fetch = state.guild.fetchMembers();
+    const member_fetch = state.guild.members.fetch();
 
     const [files] = await Promise.all([directory_read, member_fetch]);
     files.forEach(file =>
@@ -73,11 +73,11 @@ class Discord
       // Handle DM messages.
       if (!message.guild)
       {
-        const embed = new discord.RichEmbed()
+        const embed = new discord.MessageEmbed()
           .setTitle(`Mod Mail`)
           .setDescription(`DM from ${message.author} (${message.author.id}): ${message.content}`)
           .setColor(`#747f8d`)
-          .setAuthor(message.author.username, message.author.avatarURL);
+          .setAuthor(message.author.username, message.author.avatarURL());
         state.report_channel.send({embed});
       }
 
@@ -116,7 +116,7 @@ class Discord
             if (command.IsExecutable(message))
               command_name_list += `\`${command.name}\`: ${command.description}\n`;
           });
-          const help_embed = new discord.RichEmbed({
+          const help_embed = new discord.MessageEmbed({
             title: `LionBot Help`,
             description: command_name_list
           });
@@ -140,7 +140,7 @@ class Discord
 
   static ReportError(error)
   {
-    const embed = new discord.RichEmbed()
+    const embed = new discord.MessageEmbed()
       .setTitle(`Internal Error`)
       .setDescription(`${error}`)
       .setColor(`#F04747`);
@@ -149,7 +149,7 @@ class Discord
 
   static ReportInfo(info)
   {
-    const embed = new discord.RichEmbed()
+    const embed = new discord.MessageEmbed()
       .setTitle(`Info`)
       .setDescription(`${info}`)
       .setColor(`#7289DA`);
@@ -176,7 +176,7 @@ class Discord
           return;
         }
 
-        user.guild_member = state.guild.members.find(member =>
+        user.guild_member = state.guild.members.cache.find(member =>
           member.user.tag === user.discord_tag);
         if (!user.guild_member)
         {
@@ -184,7 +184,7 @@ class Discord
           return;
         }
 
-        if (user.guild_member.roles.has(state.verify_role.id))
+        if (user.guild_member.roles.cache.has(state.verify_role.id))
         {
           reject_queue.push(new UserReject(user, `Server member already has role.`));
           return;
@@ -201,19 +201,20 @@ class Discord
     logger.Verbose(`Updating server for accepted users.`);
     const promise_arr = accept_queue.map(user =>
     {
-      const embed = new discord.RichEmbed()
+      const embed = new discord.MessageEmbed()
         .setTitle(`User ${user.discord_tag} (${user.email}) Accepted`)
         .setColor(`#43B581`);
       if (user.guild_member)
-        embed.setAuthor(user.guild_member.nickname, user.guild_member.user.avatarURL);
+        embed.setAuthor(user.guild_member.nickname, user.guild_member.user.avatarURL());
       state.report_channel.send({embed});
 
-      return user.guild_member.addRole(state.verify_role)
+      return user.guild_member.roles.add(state.verify_role)
         .then(user.guild_member.send(`Your sign up entry for ${state.guild.name} has been \
 accepted! :tada:
 
 Please see <#${process.env.LB_WELCOME_CHANNEL}> to familiarize yourself with the server :)`))
-        .then(user.guild_member.addRole(state.guild.roles.find(role => role.name === user.year)));
+        .then(user.guild_member.roles.add(state.guild.roles.cache.find(role =>
+          role.name === user.year)));
     });
     return Promise.all(promise_arr);
   }
@@ -223,14 +224,14 @@ Please see <#${process.env.LB_WELCOME_CHANNEL}> to familiarize yourself with the
     logger.Verbose(`Updating server for rejected users.`);
     reject_queue.forEach(user_reject =>
     {
-      const embed = new discord.RichEmbed()
+      const embed = new discord.MessageEmbed()
         .setTitle(`User ${user_reject.user.discord_tag} (${user_reject.user.email}) Rejected`)
         .setDescription(`Reason: ${user_reject.reason}`)
         .setColor(`#F04747`);
       if (user_reject.user.guild_member)
       {
         embed.setAuthor(user_reject.user.guild_member.nickname,
-          user_reject.user.guild_member.user.avatarURL);
+          user_reject.user.guild_member.user.avatarURL());
         user_reject.user.guild_member.send(`Your sign up entry for ${state.guild.name} has been \
 rejected for the following reason: ${user_reject.reason} Please direct any questions or concerns \
 to the staff.`);

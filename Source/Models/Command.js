@@ -1,6 +1,6 @@
 'use strict';
 
-const RichEmbed = require(`discord.js`).RichEmbed;
+const MessageEmbed = require(`discord.js`).MessageEmbed;
 
 const discord = require(`../Discord.js`);
 
@@ -34,7 +34,7 @@ class Command
   IsExecutable(message)
   {
     // If there are roles to fulfill, and the user's roles contain the command's.
-    if (this.roles && message.member.roles.some(role => this.roles.indexOf(role.name)))
+    if (this.roles && message.member.roles.cache.some(role => this.roles.indexOf(role.name)))
       return true;
     // If there are no roles to fulfill.
     else if (!this.roles)
@@ -74,7 +74,7 @@ command can only be used by ${this.roles.join}.`);
       });
       // Close the mini code block.
       usage += `\``;
-      const help_embed = new RichEmbed(
+      const help_embed = new MessageEmbed(
         {
           title: `\`${this.name}\` Command Help`,
           description: `${description}${usage}\n${argument_list}`
