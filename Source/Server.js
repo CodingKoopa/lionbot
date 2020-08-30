@@ -9,7 +9,7 @@ const state = require(`./State.js`);
 const Google = require(`./Google.js`);
 const Discord = require(`./Discord.js`);
 
-logger.Info(`LionBot initializing.`);
+logger.Info(`LionBot ${require(`../package.json`).version} initializing.`);
 
 // Initialize Node.js runtime things, to handle rejections and exceptions.
 logger.Info(`Initializing Node.js.`);
