@@ -56,7 +56,7 @@ function LogFailedQueue(failed_queue, queue_type, error)
 
 async function ProcessSpreadsheet(google_auth)
 {
-  logger.Verbose(`Processing spreadsheet.`);
+  logger.Info(`Processing spreadsheet.`);
   const user_queue = await google.GetUserQueue(google_auth);
   if (user_queue.length > 0)
   {
