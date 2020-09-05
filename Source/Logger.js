@@ -24,7 +24,7 @@ const logger = winston.createLogger(
       winston.format.colorize(),
       winston.format.simple()
     ),
-    transports: [new winston.transports.Console({level: `Silly`})]
+    transports: [new winston.transports.Console({level: process.env.LB_LOGGING_LEVEL})]
   });
 
 module.exports = logger;
