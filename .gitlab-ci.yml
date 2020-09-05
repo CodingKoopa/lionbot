@@ -3,7 +3,7 @@
   variables:
     # Set the Docker host to the network connection to the dind service instead of the usual socket.
     DOCKER_HOST: tcp://docker:2375/
-  # Run in the official Docker image.
+  # Use the latest official Docker image.
   image: docker
   services:
     # Enable the Docker service.
@@ -18,8 +18,8 @@ stages:
   # Create an app package deploying stage.
   - deploy
 
+# Define the editorconfig-checker job.
 analysis:ec:
-  # Add to the analysis stage.
   stage: analyze
   # Use the latest ec Docker image.
   image: mstruebing/editorconfig-checker:latest
@@ -27,128 +27,73 @@ analysis:ec:
     # Check that all text complies with the EditorConfig file.
     - ec
 
+# Define the shfmt job.
 analysis:shfmt:
-  # Add to the analysis stage.
   stage: analyze
-  # Use the latest Alpine Linux shfmt Docker image.
-  image: mvdan/shfmt:latest-alpine
   rules:
     - changes:
         - CI/**/*.sh
+  # Use the latest Alpine Linux shfmt Docker image.
+  image: mvdan/shfmt:latest-alpine
   script:
     # Check that all Bash code has proper formatting.
     - shfmt -d CI
 
+# Define the ShellCheck job.
 analysis:shellcheck:
-  # Add to the analysis stage.
   stage: analyze
-  # Use the latest stable shellchecl Docker image.
-  image: koalaman/shellcheck-alpine:stable
   rules:
     - changes:
         - CI/**/*.sh
+  # Use the latest stable shellcheck Docker image.
+  image: koalaman/shellcheck-alpine:stable
   script:
     # Check that all Bash code is proper.
     - shellcheck -x CI/**/*.sh
 
 # Define the ESLint linting job.
 analysis:eslint:
-  # Add to the analysis stage.
   stage: analyze
-  # Run in the official Node image, to access NPM to install dependencies.
-  image: node
-  cache:
-    paths:
-      # Cache the NPM dependencies.
-      - node_modules/
   rules:
     - changes:
         - Source/*.js
         - Source/**/*.js
-  # Run the ESLint lint script.
+  cache:
+    paths:
+      # Cache the NPM dependencies.
+      - .npm/
+  # Use the latest official Node image.
+  image: node:latest
+  # Check that all JavaScript code is proper.
   script: CI/Analyze/ESLint.sh
 
-# Define the Docker image building anchor. Since there's already a Docker in Docker anchor, this
-# should only define elements needed for building.
-.build:docker: &docker_build # Include the Docker in Docker anchor.
+# Define the Docker build job.
+build:docker:
   <<: *dind
-  # Any Docker image building will be a part of the package building stage, so add it.
   stage: build
+  variables:
+    # Set the target architecture to AMD64. This will be able to run on most desktop platforms.
+    TARGET_ARCH: amd64
+  # Run the Docker build script.
+  script: CI/Build/Docker.sh
   artifacts:
     paths:
       # Save the built image.
       - Build/
-  # Run the Docker build script.
-  script: CI/Build/Docker.sh
 
-# Define the Docker AMD64 image building job.
-build:docker:amd64:
-  # Include the Docker build anchor.
-  <<: *docker_build
-  variables:
-    # Set the target architecture to AMD64. This will be able to run on most desktop platforms.
-    TARGET_ARCH: amd64
-
-# Define the Docker ARMv7 image building job.
-build:docker:arm32v7:
-  # Include the Docker build anchor.
-  <<: *docker_build
-  variables:
-    # Set the target architecture to ARMv7 32 bit. This will be able to run on some embedded
-    # platforms, such as the Raspberry Pi 2 v1.1 model.
-    TARGET_ARCH: arm32v7
-
-# Define the Docker ARMv8 image building job.
-build:docker:arm64v8:
-  # Include the Docker build anchor.
-  <<: *docker_build
-  variables:
-    # Set the target architecture to ARMv8 64 bit. This will be able to run on some embedded
-    # platforms, such as the Raspberry Pi 2 v1.2 model and the Raspberry Pi 3 models.
-    TARGET_ARCH: arm64v8
-
-# Define the Docker image deploying anchor.
-.deploy:docker: &docker_deploy # Include the Docker in Docker anchor.
-  <<: *dind
+# Define the Docker deploy job.
+deploy:docker:
   # Add to the deploying stage.
   stage: deploy
+  rules:
+    # Only deploy on the "master" branch.
+    - if: '$CI_COMMIT_BRANCH == "master"'
   variables:
     # Don't clone or fetch the Git repo, as the dependencies are all that's needed here.
     GIT_STRATEGY: none
-  only:
-    # Only deploy on the "master" branch.
-    - master
-    # Make sure tags are deployed.
-    - tags
-  # Run the deploying script.
-  script: ./CI/Deploy/Docker.sh
-
-# Define the Docker AMD64 image deploying job.
-deploy:docker:amd64:
-  <<: *docker_deploy
-  variables:
-    # Set the target architecture to AMD64. This will be able to run on most desktop platforms.
     TARGET_ARCH: amd64
   dependencies:
-    # Add the Docker AMD64 built image as a dependency.
-    - build:docker:amd64
-
-# Define the Docker ARMv7 image deploying job.
-deploy:docker:arm32v7:
-  <<: *docker_deploy
-  variables:
-    # Set the target architecture to ARMv7 32 bit.
-    TARGET_ARCH: arm32v7
-  dependencies:
-    # Add the Docker ARMv7 built image as a dependency.
-    - build:docker:arm32v7
-
-# Define the Docker ARMv8 image deploying job.
-deploy:docker:arm64v8:
-  <<: *docker_deploy
-  variables:
-    # Set the target architecture to ARMv7 32 bit.
-    TARGET_ARCH: arm64v8
-  dependencies:
-    # Add the Docker ARMv7 built image as a dependency.
-    - build:docker:arm64v8
+    # Fetch the image from the build job.
+    - build:docker
+  # Run the deploying script.
+  script: ./CI/Deploy/Docker.sh
