@@ -64,8 +64,12 @@ analysis:eslint:
       - .npm/
   # Use the latest official Node image.
   image: node:latest
-  # Check that all JavaScript code is proper.
-  script: CI/Analyze/ESLint.sh
+  before_script:
+    # Install the NPM dependencies.
+    - npm ci --cache .npm --prefer-offline
+  script:
+    # Check that all JavaScript code is proper.
+    - npm run lint
 
 # Define the Docker build job.
 build:docker:
