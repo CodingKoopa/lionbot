@@ -74,6 +74,6 @@ module.exports = {
 
     // Custom Rules
     "more-naming-conventions/snake-case-variables": `warn`,
-    "more-naming-conventions/upper-camel-case-functions": `warn`
+    // "more-naming-conventions/upper-camel-case-functions": `warn`
   }
 };
