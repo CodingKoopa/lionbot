@@ -96,8 +96,6 @@ deploy:docker:
     # Deploy if on a tag.
     - if: $CI_COMMIT_TAG
   variables:
-    # Don't clone or fetch the Git repo, as the dependencies are all that's needed here.
-    GIT_STRATEGY: none
     TARGET_ARCH: amd64
   dependencies:
     # Fetch the image from the build job.
