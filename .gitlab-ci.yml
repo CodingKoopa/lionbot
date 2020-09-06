@@ -102,4 +102,4 @@ deploy:docker:
     # Fetch the image from the build job.
     - build:docker
   # Run the deploying script.
-  script: ./CI/Deploy/Docker.sh
+  script: CI/Deploy/Docker.sh
