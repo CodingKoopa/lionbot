@@ -8,6 +8,7 @@ var State = function()
   this.guild = null;
   this.report_channel = null;
   this.verify_role = null;
+  this.alum_role = null;
 };
 
 module.exports = new State();

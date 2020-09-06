@@ -33,6 +33,9 @@ class Discord
     state.verify_role = await state.guild.roles.fetch(process.env.LB_VERIFY_ROLE);
     if (!state.verify_role)
       throw new Error(`Verification role "${process.env.LB_VERIFY_ROLE}" not found.`);
+    state.alum_role = await state.guild.roles.fetch(process.env.LB_ALUM_ROLE);
+    if (!state.alum_role)
+      throw new Error(`Alumni role "${process.env.LB_ALUM_ROLE}" not found.`);
 
     // Load all command modules.
     logger.Debug(`Loading command modules.`);
