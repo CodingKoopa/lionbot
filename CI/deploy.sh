@@ -24,5 +24,5 @@ if [ -n "$CI_COMMIT_TAG" ]; then
   docker tag "$tag_full" "$tag_full_stable"
 fi
 
-_echo "Pushing Docker image for \"$TARGET_ARCH\" to \"$tag_full\"."
-docker push "$tag_full"
+_echo "Pushing all tags for \"$TARGET_ARCH\" to \"$CI_REGISTRY_IMAGE\"."
+docker push "$CI_REGISTRY_IMAGE"
