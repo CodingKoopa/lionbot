@@ -3,6 +3,7 @@
 # shellcheck source=CI/common.sh
 . CI/common.sh
 
+image=$CI_REGISTRY_IMAGE/$TARGET_ARCH
 tag=$(get_tag)
 tag_full=$(get_tag_full)
 tag_full_latest=$(get_tag_full_latest)
@@ -24,5 +25,5 @@ if [ -n "$CI_COMMIT_TAG" ]; then
   docker tag "$tag_full" "$tag_full_stable"
 fi
 
-_echo "Pushing all tags for \"$TARGET_ARCH\" to \"$CI_REGISTRY_IMAGE\"."
-docker push "$CI_REGISTRY_IMAGE"/"$TARGET_ARCH"
+_echo "Pushing all tags for \"$TARGET_ARCH\" to \"$image\"."
+docker push "$image"
