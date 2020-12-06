@@ -25,4 +25,4 @@ if [ -n "$CI_COMMIT_TAG" ]; then
 fi
 
 _echo "Pushing all tags for \"$TARGET_ARCH\" to \"$CI_REGISTRY_IMAGE\"."
-docker push "$CI_REGISTRY_IMAGE"
+docker push "$CI_REGISTRY_IMAGE"/"$TARGET_ARCH"
