@@ -14,7 +14,7 @@ _echo() {
 #   - CI_JOB_TOKEN: GitLab CI job token used to authenticate with the API.
 #   - CI_REGISTRY: Address of the GitLab Container Registry.
 login() {
-  echo "$CI_JOB_TOKEN" | docker login "$CI_REGISTRY" -u gitlab-ci-token --password-stdin
+  printf %s "$DOCKER_PASS" | docker login "$DOCKER_REGISTRY" --username "$DOCKER_USER" --password-stdin
 }
 
 # Gets the tag of the image currently being built.
