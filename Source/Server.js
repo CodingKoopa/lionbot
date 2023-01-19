@@ -47,8 +47,12 @@ function Uninitialize(fail = false)
 
 function LogFailedQueue(failed_queue, queue_type, error)
 {
-  const ids = failed_queue.map(accept => accept.id);
-  const err_str = `${queue_type} failed: ${error} Affected users internal IDs: ${ids.join}.`;
+  const ids = failed_queue.map(accept => accept.user.id);
+  const err_str = `${queue_type} failed:
+\`\`\`
+${error}
+\`\`\`
+Affected users internal IDs: ${ids.join()}.`;
 
   logger.Error(err_str);
   Discord.ReportError(err_str);
