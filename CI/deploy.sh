@@ -3,7 +3,7 @@
 # shellcheck source=CI/common.sh
 . CI/common.sh
 
-image=$CI_REGISTRY_IMAGE/$TARGET_ARCH
+image=codingkoopa/lionbot-arm
 tag=$(get_tag)
 tag_full=$(get_tag_full)
 tag_full_latest=$(get_tag_full_latest)
