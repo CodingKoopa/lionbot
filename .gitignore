@@ -3,6 +3,11 @@ node_modules
 # Don't commit the environment variable file.
 .env*
 # Don't commit the Google OAuth credentials.
+GoogleServiceAccount.json*
+
+# Old OAuth stuff:
+
+# Don't commit the Google OAuth credentials.
 GoogleOAuthCredentials.json*
 # Don't commit the Google OAuth token.
 GoogleOAuthToken.json*
