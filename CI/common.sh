@@ -51,7 +51,7 @@ get_tag() {
 #   - CI_COMMIT_SHA: See get_tag().
 get_tag_full() {
   # Print the full tag.
-  echo codingkoopa/lionbot-arm/"$(get_tag)"
+  echo codingkoopa/lionbot-arm:"$(get_tag)"
 }
 
 # Gets the full tag for the latest image for this project.
@@ -62,7 +62,7 @@ get_tag_full() {
 #   - TARGET_ARCH: See get_tag().
 get_tag_full_latest() {
   # Generate the long "latest" tag of the image.
-  echo codingkoopa/lionbot-arm/"$TARGET_ARCH":latest
+  echo codingkoopa/lionbot-arm:"$TARGET_ARCH":latest
 }
 
 # Gets the full tag for the latest stable image for this project.
@@ -73,5 +73,5 @@ get_tag_full_latest() {
 #   - TARGET_ARCH: See get_tag().
 get_tag_full_stable() {
   # Generate the long "latest" tag of the image.
-  echo codingkoopa/lionbot-arm/"$TARGET_ARCH":stable
+  echo codingkoopa/lionbot-arm:"$TARGET_ARCH":stable
 }
