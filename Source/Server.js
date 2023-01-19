@@ -51,7 +51,7 @@ function LogFailedQueue(failed_queue, queue_type, error)
   const err_str = `${queue_type} failed: ${error} Affected users internal IDs: ${ids.join}.`;
 
   logger.Error(err_str);
-  discord.ReportError(err_str);
+  Discord.ReportError(err_str);
 }
 
 async function ProcessSpreadsheet()
