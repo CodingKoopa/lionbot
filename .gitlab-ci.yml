@@ -62,20 +62,20 @@ analysis:shellcheck:
   # Run the Docker build script.
   script: CI/build.sh
 
-# Define the Docker AMD64 image building job.
-build:docker:amd64:
-  <<: *docker_build
-  variables:
-    # Set the target architecture to AMD64. This will be able to run on most desktop platforms.
-    TARGET_ARCH: amd64
+# # Define the Docker AMD64 image building job.
+# build:docker:amd64:
+#   <<: *docker_build
+#   variables:
+#     # Set the target architecture to AMD64. This will be able to run on most desktop platforms.
+#     TARGET_ARCH: amd64
 
-# Define the Docker ARMv7 image building job.
-build:docker:arm32v7:
-  <<: *docker_build
-  variables:
-    # Set the target architecture to ARMv7 32 bit. This will be able to run on some embedded
-    # platforms, such as the Raspberry Pi 2 v1.1 model.
-    TARGET_ARCH: arm32v7
+# # Define the Docker ARMv7 image building job.
+# build:docker:arm32v7:
+#   <<: *docker_build
+#   variables:
+#     # Set the target architecture to ARMv7 32 bit. This will be able to run on some embedded
+#     # platforms, such as the Raspberry Pi 2 v1.1 model.
+#     TARGET_ARCH: arm32v7
 
 # Define the Docker ARMv8 image building job.
 build:docker:arm64v8:
@@ -101,23 +101,23 @@ build:docker:arm64v8:
   # Run the deploying script.
   script: ./CI/deploy.sh
 
-# Define the Docker AMD64 image deploying job.
-deploy:docker:amd64:
-  <<: *docker_deploy
-  variables:
-    # Set the target architecture to AMD64. This will be able to run on most desktop platforms.
-    TARGET_ARCH: amd64
-  # Require the AMD64 build job.
-  needs: ["build:docker:amd64"]
+# # Define the Docker AMD64 image deploying job.
+# deploy:docker:amd64:
+#   <<: *docker_deploy
+#   variables:
+#     # Set the target architecture to AMD64. This will be able to run on most desktop platforms.
+#     TARGET_ARCH: amd64
+#   # Require the AMD64 build job.
+#   needs: ["build:docker:amd64"]
 
-# Define the Docker ARMv7 image deploying job.
-deploy:docker:arm32v7:
-  <<: *docker_deploy
-  variables:
-    # Set the target architecture to ARMv7 32 bit.
-    TARGET_ARCH: arm32v7
-  # Require the ARMv7 build job.
-  needs: ["build:docker:arm32v7"]
+# # Define the Docker ARMv7 image deploying job.
+# deploy:docker:arm32v7:
+#   <<: *docker_deploy
+#   variables:
+#     # Set the target architecture to ARMv7 32 bit.
+#     TARGET_ARCH: arm32v7
+#   # Require the ARMv7 build job.
+#   needs: ["build:docker:arm32v7"]
 
 # Define the Docker ARMv8 image deploying job.
 deploy:docker:arm64v8:
