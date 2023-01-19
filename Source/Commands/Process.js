@@ -2,11 +2,12 @@
 
 const discord = require(`../Discord.js`);
 const events = require(`../Events.js`);
+const state = require(`../State.js`);
 
 const Command = require(`../Models/Command.js`);
 
 const description = `Forces a user signup process.`;
-const roles = [`Admin`, `Moderator`];
+const roles = [state.mod_role];
 const callback = (message) =>
 {
   events.ee.emit(`forceProcess`);

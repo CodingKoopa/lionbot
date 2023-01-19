@@ -10,7 +10,7 @@ const logger = require(`../Logger.js`);
 
 const description = `Triggers a graduation.`;
 const arg = [new Argument(`year`, `The year of the graduating class.`, true, false)];
-const roles = [`Admin`];
+const roles = [state.admin_role];
 const callback = (message, args) =>
 {
   const year = args[0];

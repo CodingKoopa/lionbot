@@ -9,6 +9,8 @@ var State = function()
   this.report_channel = null;
   this.verify_role = null;
   this.alum_role = null;
+  this.admin_role = null;
+  this.mod_role = null;
 };
 
 module.exports = new State();

@@ -53,6 +53,12 @@ class Discord
     state.alum_role = await state.guild.roles.fetch(process.env.LB_ALUM_ROLE);
     if (!state.alum_role)
       throw new Error(`Alumni role "${process.env.LB_ALUM_ROLE}" not found.`);
+    state.admin_role = await state.guild.roles.fetch(process.env.LB_ADMIN_ROLE);
+    if (!state.admin_role)
+      throw new Error(`Admin role "${process.env.LB_ADMIN_ROLE}" not found.`);
+    state.mod_role = await state.guild.roles.fetch(process.env.LB_MOD_ROLE);
+    if (!state.mod_role)
+      throw new Error(`Moderator role "${process.env.LB_MOD_ROLE}" not found.`);
 
     // Load all command modules.
     logger.Debug(`Loading command modules.`);
