@@ -34,8 +34,20 @@ LionBot is a Discord bot uniquely featuring integration with Google, allowing fo
 
 #### Google Setup
 
-1. Obtain Google OAuth client credentials using [this](https://developers.google.com/identity/protocols/OAuth2) guide. For starting out, the [Node.js Quickstart](https://developers.google.com/sheets/api/quickstart/nodejs) may be easier to use.
-2. Save the credentials JSON.
+1. Log into the [Google Cloud console](https://console.cloud.google.com/).
+   - If at any point Google's account switcher doesn't function correctly, you can append the `?authuser=<USER_ID_HERE>` to specify which logged in Google user you want to access the console from.
+2. Create a new [Google Cloud project](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
+3. Find the *APIs and Services* menu. This might be shown in a quick-access menu, and you can also just search for it, but here are absolute instructions:
+   1. Open the *Navigation menu* hamburger menu on the left.
+   2. Click *View all products*.
+   3. Click on the *APIs and Services* submenu.
+4. Click *Enable APIs and Services*.
+5. Under *Google Workspace*, enable the Google Sheets API (for manipulating the spreadsheet) and the Google Drive API (for seeing file modification times).
+6. Still within the *APIs and Services* menu, click on the *Credentials* submenu.
+7. Under *Service Accounts*, click *Manage Service Accounts*.
+8. Click *Create Service Account*.
+9. Fill out any details for the account. The optional sections can (and should) be left blank.
+10. Save the credentials JSON for later.
 
 #### Bot Setup
 
@@ -53,6 +65,7 @@ cd lionbot
 LB_LOGGING_LEVEL=Debug
 LB_DISCORD_TOKEN=ASFldsDFjk7DFkmslmk9Dmlm.DFnlsi.DFDSMKLSDFK_dfDSF8h7vjkjDFd
 ```
+5. Copy the Google Service Account credentials from earlier to `Data/GoogleServiceAccount.json`.
 
 The next steps depend on whether or not you are using Docker.
 
@@ -127,11 +140,6 @@ npm install
 ```bash
 npm run start
 ```
-
-##### Bot Initialization
-
-1. Copy the credentials JSON, from [Google Setup](#google-setup), to `Data/GoogleOAuthCredentials.json`. If using Docker, the path to `Data` can be found by running a command like `docker volume inspect --format '{{ .Mountpoint }}' lionbot-data`.
-2. Follow the link to have the bot create `Data/GoogleOAuthToken.json`.
 
 #### Building
 

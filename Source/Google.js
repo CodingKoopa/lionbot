@@ -12,7 +12,7 @@ class Google
 {
   constructor()
   {
-    // The access scopes allowed during the OAuth authantication process. After changing this, the
+    // The access scopes allowed during the authentication process. After changing this, the
     // token file must be recreated.
     this.scopes = [
       `https://www.googleapis.com/auth/spreadsheets`,
