@@ -14,7 +14,24 @@ class Discord
 {
   constructor()
   {
-    this.client = new discord.Client();
+    this.client = new discord.Client({
+      partials: [
+        discord.Partials.Message,
+        discord.Partials.Channel,
+        discord.Partials.Reaction,
+      ],
+      intents: [
+        discord.GatewayIntentBits.Guilds,
+        discord.GatewayIntentBits.GuildMembers,
+        discord.GatewayIntentBits.GuildMessages,
+        discord.GatewayIntentBits.GuildMessageReactions,
+        discord.GatewayIntentBits.GuildMessageTyping,
+        discord.GatewayIntentBits.DirectMessages,
+        discord.GatewayIntentBits.DirectMessageReactions,
+        discord.GatewayIntentBits.DirectMessageTyping,
+        discord.GatewayIntentBits.MessageContent
+      ],
+    });
   }
 
   async Initialize()
@@ -65,7 +82,7 @@ class Discord
     });
 
     // When a new message is recieved.
-    this.client.on(`message`, message =>
+    this.client.on(`messageCreate`, message =>
     {
       // Ignore bot messages.
       if (message.author.bot)
@@ -74,12 +91,12 @@ class Discord
       // Handle DM messages.
       if (!message.guild)
       {
-        const embed = new discord.MessageEmbed()
+        const embed = new discord.EmbedBuilder()
           .setTitle(`Mod Mail`)
           .setDescription(`DM from ${message.author} (${message.author.id}): ${message.content}`)
           .setColor(`#747f8d`)
-          .setAuthor(message.author.username, message.author.avatarURL());
-        state.report_channel.send({embed});
+          .setAuthor({name: message.author.username, iconURL: message.author.avatarURL()});
+        state.report_channel.send({embeds: [embed]});
       }
 
       // Handle commands.
@@ -109,20 +126,26 @@ class Discord
         // alias.
         if (entered_command === `help`)
         {
-          message.reply(`private messaging bot help to you.`);
-          let command_name_list = ``;
-          command_list.forEach(command =>
+          message.guild.roles.fetch().then(() =>
           {
-            // Only add commands that the user can run to the list.
-            if (command.IsExecutable(message))
-              command_name_list += `\`${command.name}\`: ${command.description}\n`;
+            message.reply(`Private messaging bot help to you.`);
+            let command_name_list = ``;
+            command_list.forEach(command =>
+            {
+              // Only add commands that the user can run to the list.
+              if (command.IsExecutable(message))
+                command_name_list += `\`${command.name}\`: ${command.description}\n`;
+              else
+                command_name_list += `can't access ${command.name}`;
+            });
+            const help_embed = new discord.EmbedBuilder({
+              title: `LionBot Help`,
+              description: command_name_list
+            });
+            message.author.send({
+              content: `Here's the help for this bot:`, embeds: [help_embed]}).then(() =>
+              message.delete());
           });
-          const help_embed = new discord.MessageEmbed({
-            title: `LionBot Help`,
-            description: command_name_list
-          });
-          message.author.send(`Here's the help for this bot:`, {embed: help_embed}).then(() =>
-            message.delete());
         }
         // If the command could be found.
         else if (index >= 0)
@@ -141,20 +164,20 @@ class Discord
 
   static ReportError(error)
   {
-    const embed = new discord.MessageEmbed()
+    const embed = new discord.EmbedBuilder()
       .setTitle(`Internal Error`)
       .setDescription(`${error}`)
       .setColor(`#F04747`);
-    state.report_channel.send({embed});
+    state.report_channel.send({embeds: [embed]});
   }
 
   static ReportInfo(info)
   {
-    const embed = new discord.MessageEmbed()
+    const embed = new discord.EmbedBuilder()
       .setTitle(`Info`)
       .setDescription(`${info}`)
       .setColor(`#7289DA`);
-    state.report_channel.send({embed});
+    state.report_channel.send({embeds: [embed]});
   }
 
   ProcessUserQueue(user_queue)
@@ -202,12 +225,13 @@ class Discord
     logger.Verbose(`Updating server for accepted users.`);
     const promise_arr = accept_queue.map(user =>
     {
-      const embed = new discord.MessageEmbed()
+      const embed = new discord.EmbedBuilder()
         .setTitle(`User ${user.discord_tag} (${user.email}) Accepted`)
         .setColor(`#43B581`);
       if (user.guild_member)
-        embed.setAuthor(user.guild_member.nickname, user.guild_member.user.avatarURL());
-      state.report_channel.send({embed});
+        embed.setAuthor({name: user.guild_member.nickname,
+          iconURL: user.guild_member.user.avatarURL()});
+      state.report_channel.send({embeds: [embed]});
 
       return user.guild_member.roles.add(state.verify_role)
         .then(user.guild_member.send(`Your sign up entry for ${state.guild.name} has been \
@@ -225,19 +249,19 @@ Please see <#${process.env.LB_WELCOME_CHANNEL}> to familiarize yourself with the
     logger.Verbose(`Updating server for rejected users.`);
     reject_queue.forEach(user_reject =>
     {
-      const embed = new discord.MessageEmbed()
+      const embed = new discord.EmbedBuilder()
         .setTitle(`User ${user_reject.user.discord_tag} (${user_reject.user.email}) Rejected`)
         .setDescription(`Reason: ${user_reject.reason}`)
         .setColor(`#F04747`);
       if (user_reject.user.guild_member)
       {
-        embed.setAuthor(user_reject.user.guild_member.nickname,
-          user_reject.user.guild_member.user.avatarURL());
+        embed.setAuthor({name: user_reject.user.guild_member.nickname,
+          iconURL: user_reject.user.guild_member.user.avatarURL()});
         user_reject.user.guild_member.send(`Your sign up entry for ${state.guild.name} has been \
 rejected for the following reason: ${user_reject.reason} Please direct any questions or concerns \
-to the staff.`);
+to the Senior Organizers.`);
       }
-      state.report_channel.send({embed});
+      state.report_channel.send({embeds: [embed]});
     });
     logger.Info(`${reject_queue.length} user(s) rejected on Discord.`);
   }

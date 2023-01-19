@@ -1,6 +1,6 @@
 'use strict';
 
-const MessageEmbed = require(`discord.js`).MessageEmbed;
+const EmbedBuilder = require(`discord.js`).EmbedBuilder;
 
 const discord = require(`../Discord.js`);
 
@@ -74,14 +74,14 @@ command can only be used by ${this.roles.join}.`);
       });
       // Close the mini code block.
       usage += `\``;
-      const help_embed = new MessageEmbed(
+      const help_embed = new EmbedBuilder(
         {
           title: `\`${this.name}\` Command Help`,
           description: `${description}${usage}\n${argument_list}`
         });
-      message.reply(`here's the command help for \`${this.name}\`:`,
+      message.reply(`Here's the command help for \`${this.name}\`:`,
         {
-          embed: help_embed
+          embeds: [help_embed]
         });
       return 0;
     }
