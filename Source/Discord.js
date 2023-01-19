@@ -39,7 +39,7 @@ class Discord
     logger.Verbose(`Logging into Discord.`);
     await this.client.login(process.env.LB_TOKEN);
 
-    this.client.user.setActivity(`sign up forms 👌`, { type: `WATCHING` });
+    this.client.user.setActivity(`sign-up forms :)`, { type: `WATCHING` });
 
     state.report_channel = await this.client.channels.fetch(process.env.LB_REPORT_CHANNEL);
     if (!state.report_channel)
