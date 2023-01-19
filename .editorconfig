@@ -9,3 +9,7 @@ insert_final_newline = true
 
 [*.js]
 max_line_length = 100
+
+# Markdown lists have special indentation.
+[*.md]
+indent_size = unset
