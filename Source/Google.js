@@ -1,9 +1,5 @@
 'use strict';
 
-const fs = require(`fs`).promises;
-const {promisify} = require(`util`);
-const readline = require(`readline`);
-
 const {google} = require(`googleapis`);
 
 const state = require(`./State.js`);
@@ -22,114 +18,30 @@ class Google
       `https://www.googleapis.com/auth/spreadsheets`,
       `https://www.googleapis.com/auth/drive.metadata.readonly`
     ];
-    // This file stores the OAuth credentials. It's obtained from the Google API Console.
-    this.credential_path = `Data/GoogleOAuthCredentials.json`;
-    // This file stores the user's access and refresh tokens. It's created automatically when the
-    // authorization flow completes for the first time.
-    this.token_path = `Data/GoogleOAuthToken.json`;
+    // This file stores the service account credentials. It's obtained from the Google API Console.
+    this.credential_path = `Data/GoogleServiceAccount.json`;
     this.sheet_name = `Users`;
 
     this.accepted_user_emails = null;
-  }
-
-  async AskQuestion(question)
-  {
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-    rl.question[promisify.custom] = (question) =>
-    {
-      return new Promise((resolve) =>
-      {
-        rl.question(question, resolve);
-      });
-    };
-    const answer = await promisify(rl.question)(question);
-    rl.close();
-    return answer;
+    this.auth_client = null;
   }
 
   async Initialize()
   {
-    logger.Debug(`Reading OAuth credentials from "${this.credential_path}".`);
-    let credential_data = null;
-    while (credential_data === null)
-    {
-      try
-      {
-        credential_data = await fs.readFile(this.credential_path);
-      }
-      catch (e)
-      {
-        logger.Error(`Unable to read credential file: ${e}.`);
-        const choice = await this.AskQuestion(`Try again? (y/n)`);
-
-        if (choice === `n`)
-          throw new Error(`Unable to read credential file.`);
-      }
-    }
-    return this.Authenticate(JSON.parse(credential_data));
+    const auth = new google.auth.GoogleAuth({
+      keyFilename: this.credential_path,
+      scopes: this.scopes
+    });
+    this.auth_client = await auth.getClient();
   }
 
-  async Authenticate(credentials)
-  {
-    const {client_secret, client_id, redirect_uris} = credentials.installed;
-    const auth = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-
-    // Read the OAuth token from the local path.
-    logger.Debug(`Reading OAuth token from "${this.token_path}".`);
-    try
-    {
-      const token_data = await fs.readFile(this.token_path);
-      // If the file could be read, use the token.
-      auth.setCredentials(JSON.parse(token_data));
-      return auth;
-    }
-    catch (e)
-    {
-      // If the file couldn't be read, generate a new authentication URL to recieve a token.
-      logger.Error(`Unable to read token file: ${e}.`);
-      const auth_url = auth.generateAuthUrl({
-        access_type: `offline`,
-        scope: this.scopes,
-      });
-      logger.Info(`Authorize this app by visiting this url: ${auth_url}`);
-
-      const code = await this.AskQuestion(`Enter the code from the page: `);
-
-      let token;
-      try
-      {
-        token = await auth.getToken(code);
-      }
-      catch (e)
-      {
-        throw new Error(`Unable to get access token: ${e}.`);
-      }
-      auth.setCredentials(token);
-
-      try
-      {
-        // Store the token to disk for later program executions.
-        fs.writeFile(this.token_path, JSON.stringify(token));
-      }
-      catch (e)
-      {
-        // This error isn't fatal, so don't throw an exception.
-        logger.Error(`Unable to write access token to disk: ${e}`);
-      }
-      return auth;
-    }
-  }
-
-  async SpreadsheetIsModified(auth)
+  async SpreadsheetIsModified()
   {
     if (state.last_spreadsheet_check_time === null)
       return true;
 
     logger.Verbose(`Getting spreadsheet modified time.`);
-    const drive = google.drive({version: `v3`, auth: auth});
+    const drive = google.drive({version: `v3`, auth: this.auth_client});
     const request = {
       fileId: process.env.LB_SPREADSHEET_FILE_ID,
       fields: `modifiedTime`
@@ -141,7 +53,7 @@ class Google
     }
     catch (e)
     {
-      logger.Error(`The Google Drive API returned an error: ${e}`);
+      logger.Error(`The Google Drive API returned an error: ${e.stack || e}`);
       return true;
     }
 
@@ -159,11 +71,11 @@ ${state.last_spreadsheet_check_time.toISOString()}.`);
     }
   }
 
-  async GetUserQueue(auth)
+  async GetUserQueue()
   {
     logger.Verbose(`Getting user queue from spreadsheet.`);
 
-    const sheets = google.sheets({version: `v4`, auth: auth});
+    const sheets = google.sheets({version: `v4`, auth: this.auth_client});
     const request = {
       spreadsheetId: process.env.LB_SPREADSHEET_FILE_ID,
       range: `'${this.sheet_name}'!B2:E`
@@ -175,7 +87,7 @@ ${state.last_spreadsheet_check_time.toISOString()}.`);
     }
     catch (e)
     {
-      throw new Error(`The Google Sheets API returned an error: ${e}`);
+      throw new Error(`The Google Sheets API returned an error: ${e.stack || e}`);
     }
 
     const rows = res.data.values;
@@ -219,7 +131,7 @@ ${state.last_spreadsheet_check_time.toISOString()}.`);
     return {accept_queue, reject_queue};
   }
 
-  async AcceptUsers(auth, accept_queue)
+  async AcceptUsers(accept_queue)
   {
     logger.Verbose(`Updating spreadsheet for accepted users.`);
     let data = accept_queue.map(user =>
@@ -234,7 +146,7 @@ ${state.last_spreadsheet_check_time.toISOString()}.`);
       };
     });
 
-    const sheets = google.sheets({version: `v4`, auth: auth});
+    const sheets = google.sheets({version: `v4`, auth: this.auth_client});
     const request = {
       spreadsheetId: process.env.LB_SPREADSHEET_FILE_ID,
       resource: {
@@ -249,13 +161,13 @@ ${state.last_spreadsheet_check_time.toISOString()}.`);
     }
     catch (e)
     {
-      throw new Error(`The Google Sheets API returned an error: ${e}`);
+      throw new Error(`The Google Sheets API returned an error: ${e.stack || e}`);
     }
 
     logger.Info(`${res.data.totalUpdatedRows} user(s) accepted on spreadsheet.`);
   }
 
-  async RejectUsers(auth, reject_queue)
+  async RejectUsers(reject_queue)
   {
     logger.Verbose(`Updating spreadsheet for rejected users.`);
     let data = reject_queue.map(user_reject =>
@@ -270,7 +182,7 @@ ${state.last_spreadsheet_check_time.toISOString()}.`);
       };
     });
 
-    const sheets = google.sheets({version: `v4`, auth: auth});
+    const sheets = google.sheets({version: `v4`, auth: this.auth_client});
     const request = {
       spreadsheetId: process.env.LB_SPREADSHEET_FILE_ID,
       resource: {
@@ -285,7 +197,7 @@ ${state.last_spreadsheet_check_time.toISOString()}.`);
     }
     catch (e)
     {
-      throw new Error(`The Google Sheets API returned an error: ${e}`);
+      throw new Error(`The Google Sheets API returned an error: ${e.stack || e}`);
     }
     logger.Info(`${res.data.totalUpdatedRows} user(s) rejected on spreadsheet.`);
   }

@@ -54,10 +54,10 @@ function LogFailedQueue(failed_queue, queue_type, error)
   discord.ReportError(err_str);
 }
 
-async function ProcessSpreadsheet(google_auth)
+async function ProcessSpreadsheet()
 {
   logger.Info(`Processing spreadsheet.`);
-  const user_queue = await google.GetUserQueue(google_auth);
+  const user_queue = await google.GetUserQueue();
   if (user_queue.length > 0)
   {
     let {accept_queue, reject_queue} = discord.ProcessUserQueue(user_queue);
@@ -68,7 +68,7 @@ async function ProcessSpreadsheet(google_auth)
       try
       {
         await Promise.all([
-          google.AcceptUsers(google_auth, accept_queue),
+          google.AcceptUsers(accept_queue),
           discord.AcceptUsers(accept_queue)
         ]);
       }
@@ -83,7 +83,7 @@ async function ProcessSpreadsheet(google_auth)
       {
         await Promise.all([
           discord.RejectUsers(reject_queue),
-          google.RejectUsers(google_auth, reject_queue)
+          google.RejectUsers(reject_queue)
         ]);
       }
       catch (e)
@@ -101,7 +101,6 @@ async function ProcessSpreadsheet(google_auth)
 
 async function Start()
 {
-  let google_auth;
   try
   {
     // Initialize the Google Sheets API client.
@@ -112,8 +111,7 @@ async function Start()
     logger.Info(`Initializing Discord API client.`);
     const discord_initialization = discord.Initialize();
 
-    const results = await Promise.all([google_initialization, discord_initialization]);
-    google_auth = results[0];
+    await Promise.all([google_initialization, discord_initialization]);
   }
   catch (e)
   {
@@ -126,7 +124,7 @@ async function Start()
   try
   {
     logger.Verbose(`Processing spreadsheet initially.`);
-    await ProcessSpreadsheet(google_auth);
+    await ProcessSpreadsheet();
   }
   catch (e)
   {
@@ -141,7 +139,7 @@ async function Start()
     if (await google.SpreadsheetIsModified(google_auth))
     {
       logger.Verbose(`Processing spreadsheet because of timer or command.`);
-      ProcessSpreadsheet(google_auth);
+      ProcessSpreadsheet();
     }
   }
   setInterval(ForceProcessSpreadsheet, 10 * 60 * 1000);
