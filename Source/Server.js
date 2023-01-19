@@ -149,7 +149,7 @@ async function Start()
       ProcessSpreadsheet();
     }
   }
-  setInterval(ForceProcessSpreadsheet, 10 * 60 * 1000);
+  setInterval(ForceProcessSpreadsheet, 5 * 60 * 1000);
   events.ee.on(`forceProcess`, () => ForceProcessSpreadsheet());
 }
 
