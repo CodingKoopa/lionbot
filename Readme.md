@@ -11,6 +11,7 @@ LionBot is a Discord bot uniquely featuring integration with Google, allowing fo
 ### Instructions
 
 #### Discord Setup
+
 1. Create a Discord server.
 2. Modify the `@everyone` role to take away the `Send Messages` permission in the `Text Permissions` section.
 3. Make 4 roles (These must be named exactly how they are typed here, unless noted otherwise.):
@@ -32,10 +33,12 @@ LionBot is a Discord bot uniquely featuring integration with Google, allowing fo
 7. Give the bot role to the newly invited bot.
 
 #### Google Setup
+
 1. Obtain Google OAuth client credentials using [this](https://developers.google.com/identity/protocols/OAuth2) guide. For starting out, the [Node.js Quickstart](https://developers.google.com/sheets/api/quickstart/nodejs) may be easier to use.
 2. Save the credentials JSON.
 
 #### Bot Setup
+
 1. Open up a terminal or command prompt.
 2. Clone the `lionbot` repository:
 ```bash
@@ -54,6 +57,7 @@ LB_DISCORD_TOKEN=ASFldsDFjk7DFkmslmk9Dmlm.DFnlsi.DFDSMKLSDFK_dfDSF8h7vjkjDFd
 The next steps depend on whether or not you are using Docker.
 
 ##### Bot Setup with Docker
+
 In this section, there will be two code samples for each step:
 - A Bash command for use with with the Docker CLI.
 - A [Docker Compose](https://docs.docker.com/compose/overview/) `yml` configuration, with `version: "3.7"`.
@@ -61,38 +65,47 @@ In this section, there will be two code samples for each step:
 Which one of these two you follow depends on whether or not you use Docker Compose in your setup. **Either way, the Docker excerpts should be combined into a final command or `yml`.**
 
 1. Run the bot (read the following steps before running this!):
-```bash
-docker run --env-file .env registry.gitlab.com/codingkoopa/lionbot/amd64:stable
-```
-```yml
-services:
-  lionbot:
-    image: registry.gitlab.com/codingkoopa/lionbot/amd64:stable
-    env_file: /opt/lionbot/.env
-```
+
+   ```bash
+   docker run --env-file .env registry.gitlab.com/codingkoopa/lionbot/amd64:stable
+   ```
+
+   ```yml
+   services:
+     lionbot:
+       image: registry.gitlab.com/codingkoopa/lionbot/amd64:stable
+       env_file: /opt/lionbot/.env
+   ```
+
 2. Make the bot restart if it crashes (Optional.):
-```bash
-docker run --restart on-failure
-```
-```yml
-services:
-  lionbot:
-    restart: on-failure
-```
+
+   ```bash
+   docker run --restart on-failure
+   ```
+
+   ```yml
+   services:
+     lionbot:
+       restart: on-failure
+   ```
+
 3. Use the `Data` mount point to create a volume:
-```bash
-docker run --mount type=volume,source=lionbot-data,target=/usr/src/app/Data
-```
-```yml
-services:
-  lionbot:
-    volumes:
-      - type: volume
-        source: lionbot-data
-        target: /usr/src/app/Data
-```
+
+   ```bash
+   docker run --mount type=volume,source=lionbot-data,target=/usr/src/app/Data
+   ```
+
+   ```yml
+   services:
+     lionbot:
+       volumes:
+         - type: volume
+           source: lionbot-data
+           target: /usr/src/app/Data
+   ```
 
 ##### Bot Setup without Docker
+
 1. Export the configuration variables. This can be done by turning the aforementioned environment file into a script that exports the variables, or a Bash function like so:
 ```bash
 # Exports the contents of an "ENV" file.
@@ -116,10 +129,12 @@ npm run start
 ```
 
 ##### Bot Initialization
+
 1. Copy the credentials JSON, from [Google Setup](#google-setup), to `Data/GoogleOAuthCredentials.json`. If using Docker, the path to `Data` can be found by running a command like `docker volume inspect --format '{{ .Mountpoint }}' lionbot-data`.
 2. Follow the link to have the bot create `Data/GoogleOAuthToken.json`.
 
 #### Building
+
 LionBot Docker images are automatically built by [GitLab CI/CD](https://docs.gitlab.com/ee/ci/) and uploaded to the [GitLab Container Registry](https://docs.gitlab.com/ee/user/packages/container_registry/), but it can be built manually:
 ```sh
 docker build . -t lionbot
@@ -131,6 +146,7 @@ services:
 ```
 
 ## Contributing
+
 If you are interested in working on the bot's code, follow these steps to get a development environment up and running:
 1. Follow [Discord Setup](#discord-setup) again, creating a separate Discord server, and separate bot account.
 2. Create a new environment file with the development bot account info.
@@ -144,14 +160,17 @@ npm run lint
 ```
 
 ## Features
+
 A full list of commands be found by running the `help` command.
 
 ### Google Sheets Integration
+
 LionBot's [Google Sheets](https://www.google.com/sheets/about/) integration follows a pipeline to a Google Sheet for Discord user verification.
 - Users submit a form via a [Google Form](https://www.google.com/forms/about/).
 - Google automatically translates the data to a Google Sheet spreadsheet:
 
 ![Google Sheet initial spreadsheet.](Docs/sheet-initial.png)
+
 - LionBot fetches the cells of the spreadsheet. This is done when the bot is started, and when the `process` command is ran from Discord. Additionally, every 10 minutes the bot will check to see whether a change has been made to the file, and if so fetch the cells again.
 - LionBot filters the results to users whose status is blank, as shown above. These users have had their submission neither approved nor rejected, as they haven't yet been processed by the bot. This is the **user queue**.
 - LionBot runs the **user queue** through two passes:
@@ -164,4 +183,5 @@ LionBot's [Google Sheets](https://www.google.com/sheets/about/) integration foll
 ![Google Sheets populated spreadsheet.](Docs/sheet-populated.png)
 
 ## License
+
 LionBot is licensed under the GNU General Public License v2.0.
