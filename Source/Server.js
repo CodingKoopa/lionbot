@@ -74,7 +74,7 @@ async function ProcessSpreadsheet()
       }
       catch (e)
       {
-        LogFailedQueue(accept_queue, `User acception`, e);
+        LogFailedQueue(accept_queue, `User acception`, e.stack || e);
       }
     }
     if (reject_queue.length > 0)
@@ -88,7 +88,7 @@ async function ProcessSpreadsheet()
       }
       catch (e)
       {
-        LogFailedQueue(reject_queue, `User rejection`, e);
+        LogFailedQueue(reject_queue, `User rejection`, e.stack || e);
       }
     }
   }
@@ -115,7 +115,7 @@ async function Start()
   }
   catch (e)
   {
-    logger.Error(`Initialization failed: ${e}`);
+    logger.Error(`Initialization failed: ${e.stack || e}`);
     Uninitialize(true);
     return;
   }
@@ -128,7 +128,7 @@ async function Start()
   }
   catch (e)
   {
-    logger.Error(`Spreadsheet processing failed: ${e}`);
+    logger.Error(`Spreadsheet processing failed: ${e.stack || e}`);
     Uninitialize(true);
     return;
   }

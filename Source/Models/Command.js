@@ -106,9 +106,9 @@ than ${this.args.length} accepted, given ${passed_arguments.length}. ${see_help_
           message.delete();
         return 0;
       }
-      catch (error)
+      catch (e)
       {
-        message.channel.send(`:rotating_light: ${message.author} Error: ${error}`);
+        message.channel.send(`:rotating_light: ${message.author} Error: ${e.stack || e}`);
         return 1;
       }
     }
