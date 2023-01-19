@@ -43,8 +43,11 @@ class Command
       return false;
   }
 
-  Execute(message, passed_arguments, delete_message = true)
+  async Execute(message, passed_arguments, delete_message = true)
   {
+    await message.guild.roles.fetch();
+    await message.guild.members.fetch();
+
     const see_help_message = `See \`${process.env.LB_PREFIX}${this.name} --help\` for usage.`;
     if (!this.IsExecutable(message))
     {

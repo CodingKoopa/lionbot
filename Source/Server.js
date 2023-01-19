@@ -140,8 +140,11 @@ async function Start()
   logger.Info(`Scheduling spreadsheet processing.`);
   async function ForceProcessSpreadsheet()
   {
-    if (await google.SpreadsheetIsModified(google_auth))
+    if (await google.SpreadsheetIsModified())
     {
+      logger.Verbose(`Refreshing cache.`);
+      await state.guild.roles.fetch();
+      await state.guild.members.fetch();
       logger.Verbose(`Processing spreadsheet because of timer or command.`);
       ProcessSpreadsheet();
     }
