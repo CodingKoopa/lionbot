@@ -21,7 +21,7 @@ FROM ${TARGET_ARCH}/node as install-app
 # Set the working directory to an app directory in the read only source code directory.
 WORKDIR /usr/src/app
 # Copy the app dependencies to the working directory.
-COPY --from=install-dependencies /usr/src/app-deps ./
+COPY --chown=root:root --from=install-dependencies /usr/src/app-deps ./
 # Copy the package metadata and the environment variable configuration specification to the working
 # directory.
 COPY package.json env.json ./
