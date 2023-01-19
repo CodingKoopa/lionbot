@@ -26,15 +26,15 @@ login() {
 #   - CI_COMMIT_SHA: The hash of this commit (optional if tag is specified).
 get_tag() {
   # Tag images with the architecture they're for, to begin with.
-  short_tag=$TARGET_ARCH
+  short_tag=""
 
   # If a Git tag is present.
   if [ -n "$CI_COMMIT_TAG" ]; then
     # Add the Git tag.
-    short_tag=$short_tag:$CI_COMMIT_TAG
+    short_tag=$CI_COMMIT_TAG
   else
     # Add the Git commit hash.
-    short_tag=$short_tag:$CI_COMMIT_SHA
+    short_tag=$CI_COMMIT_SHA
   fi
 
   # Print the tag.
@@ -62,7 +62,7 @@ get_tag_full() {
 #   - TARGET_ARCH: See get_tag().
 get_tag_full_latest() {
   # Generate the long "latest" tag of the image.
-  echo codingkoopa/lionbot-arm:"$TARGET_ARCH":latest
+  echo codingkoopa/lionbot-arm:latest
 }
 
 # Gets the full tag for the latest stable image for this project.
@@ -73,5 +73,5 @@ get_tag_full_latest() {
 #   - TARGET_ARCH: See get_tag().
 get_tag_full_stable() {
   # Generate the long "latest" tag of the image.
-  echo codingkoopa/lionbot-arm:"$TARGET_ARCH":stable
+  echo codingkoopa/lionbot-arm:stable
 }
