@@ -207,7 +207,7 @@ class Discord
         }
 
         user.guild_member = state.guild.members.cache.find(member =>
-          member.user.tag === user.discord_tag);
+          member.user.username === user.discord_tag);
         if (!user.guild_member)
         {
           reject_queue.push(new UserReject(user, `Discord account not found in server.`));
