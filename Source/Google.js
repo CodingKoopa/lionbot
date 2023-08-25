@@ -57,18 +57,8 @@ class Google
       return true;
     }
 
-    logger.Silly(`Spreadsheet last modified time: ${res.data.modifiedTime}. Last checked time: \
-${state.last_spreadsheet_check_time.toISOString()}.`);
-    if (new Date(res.data.modifiedTime).getTime() >= state.last_spreadsheet_check_time.getTime())
-    {
-      logger.Debug(`Spreadsheet needs to be processed.`);
-      return true;
-    }
-    else
-    {
-      logger.Debug(`Spreadsheet doesn't need to be processed.`);
-      return false;
-    }
+    logger.Silly(`Forcing modification.`);
+    return true;
   }
 
   async GetUserQueue()
